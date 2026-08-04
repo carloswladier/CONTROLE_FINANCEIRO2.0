@@ -1,0 +1,6 @@
+{
+  "name": "Controle Financeiro & Cartões",
+  "description": "Sistema completo de controle financeiro pessoal com gestão de cartão de crédito parcelado, gastos fixos, receitas e gráficos de previsão orçamentária.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
