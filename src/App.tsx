@@ -62,10 +62,26 @@ export default function App() {
     return saved ? JSON.parse(saved) : [];
   });
 
-  // Hostinger Database States
-  const [isDbModalOpen, setIsDbModalOpen] = useState(false);
-  const [dbStatus, setDbStatus] = useState<any>(null);
-  const [isSyncing, setIsSyncing] = useState(false);
+// Hostinger Database States
+interface HostingerDbStatus {
+  configured: boolean;
+  connected: boolean;
+  latencyMs?: number;
+  message?: string;
+  error?: string;
+  errorCode?: string;
+  config?: {
+    host: string;
+    port: number;
+    user: string;
+    database: string;
+    hasPassword: boolean;
+  };
+}
+
+const [isDbModalOpen, setIsDbModalOpen] = useState(false);
+const [dbStatus, setDbStatus] = useState<HostingerDbStatus | null>(null);
+const [isSyncing, setIsSyncing] = useState(false);
 
   // Check Hostinger DB connection status
   const checkDbStatus = async () => {
