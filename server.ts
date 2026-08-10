@@ -11,13 +11,13 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
-const PORT = Number(process.env.PORT) || 3000;
+const PORT = 3000;
 
 app.use(express.json({ limit: '10mb' }));
 
 // Helper function to get Hostinger MySQL connection config from process.env or provided credentials
 function getHostingerConfig(customConfig?: any) {
-  const host = customConfig?.host || process.env.HOSTINGER_DB_HOST || 'localhost';
+  const host = customConfig?.host || process.env.HOSTINGER_DB_HOST || '';
   const port = parseInt(customConfig?.port || process.env.HOSTINGER_DB_PORT || '3306', 10);
   const user = customConfig?.user || process.env.HOSTINGER_DB_USER || '';
   const password = customConfig?.password || process.env.HOSTINGER_DB_PASSWORD || '';
@@ -409,6 +409,14 @@ app.post('/api/db/sync', async (req, res) => {
       message: 'Erro ao salvar dados no MySQL Hostinger: ' + (err?.message || err)
     });
   }
+});
+
+// Fallback handler for non-existent /api routes to prevent returning HTML
+app.all('/api/*', (req, res) => {
+  res.status(404).json({
+    success: false,
+    message: `Endpoint de API não encontrado: ${req.method} ${req.path}`
+  });
 });
 
 // Vite Middleware for Development / Static serving for Production
