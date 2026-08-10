@@ -1,6 +1,5 @@
 import express from 'express';
 import path from 'path';
-import path from 'path';
 import mysql from 'mysql2/promise';
 import dotenv from 'dotenv';
 import { createServer as createViteServer } from 'vite';
