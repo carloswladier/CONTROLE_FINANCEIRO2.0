@@ -8,7 +8,8 @@ import {
   Download, 
   Upload,
   Plus,
-  Trash2
+  Trash2,
+  Database
 } from 'lucide-react';
 import { formatMonthName, getCurrentYearMonth, addMonthsToYearMonth } from '../utils/financeUtils';
 
@@ -20,6 +21,8 @@ interface HeaderProps {
   onClearData?: () => void;
   onExportData: () => void;
   onImportData: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onOpenHostingerDbModal?: () => void;
+  dbConnected?: boolean;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -30,6 +33,8 @@ export const Header: React.FC<HeaderProps> = ({
   onClearData,
   onExportData,
   onImportData,
+  onOpenHostingerDbModal,
+  dbConnected,
 }) => {
   const currentYM = getCurrentYearMonth();
   const isCurrentMonth = selectedYearMonth === currentYM;
@@ -132,6 +137,23 @@ export const Header: React.FC<HeaderProps> = ({
               <Plus className="w-4 h-4" />
               <span>Gasto Fixo</span>
             </button>
+
+            {onOpenHostingerDbModal && (
+              <button
+                onClick={onOpenHostingerDbModal}
+                className={`inline-flex items-center space-x-1.5 px-3 py-2 rounded-lg text-xs font-semibold shadow-xs transition-colors whitespace-nowrap cursor-pointer border ${
+                  dbConnected
+                    ? 'bg-emerald-50 text-emerald-800 border-emerald-300 hover:bg-emerald-100'
+                    : 'bg-indigo-50 text-indigo-800 border-indigo-200 hover:bg-indigo-100'
+                }`}
+                title="Conexão com Banco de Dados Hostinger MySQL"
+                id="hostinger-db-btn"
+              >
+                <Database className="w-4 h-4 text-indigo-600" />
+                <span className="hidden sm:inline">Hostinger DB</span>
+                <span className={`w-2 h-2 rounded-full ${dbConnected ? 'bg-emerald-500 animate-pulse' : 'bg-amber-500'}`} />
+              </button>
+            )}
 
             <div className="h-6 w-px bg-slate-200 mx-1 hidden sm:block"></div>
 

@@ -33,6 +33,7 @@ import { VariableExpensesSection } from './components/VariableExpensesSection';
 import { IncomeSection } from './components/IncomeSection';
 import { TransactionModal } from './components/TransactionModal';
 import { ConfirmModal } from './components/ConfirmModal';
+import { HostingerDbModal } from './components/HostingerDbModal';
 
 type ActiveTab = 'all' | 'credit' | 'fixed' | 'variable' | 'income' | 'forecast' | 'charts';
 
@@ -60,6 +61,67 @@ export default function App() {
     const saved = localStorage.getItem('cf_credit');
     return saved ? JSON.parse(saved) : [];
   });
+
+  // Hostinger Database States
+  const [isDbModalOpen, setIsDbModalOpen] = useState(false);
+  const [dbStatus, setDbStatus] = useState<any>(null);
+  const [isSyncing, setIsSyncing] = useState(false);
+
+  // Check Hostinger DB connection status
+  const checkDbStatus = async () => {
+    try {
+      const res = await fetch('/api/db/status');
+      const json = await res.json();
+      setDbStatus(json);
+    } catch (err) {
+      setDbStatus({
+        configured: false,
+        connected: false,
+        error: 'Erro de comunicação ao checar banco Hostinger.'
+      });
+    }
+  };
+
+  useEffect(() => {
+    checkDbStatus();
+  }, []);
+
+  const handlePushToHostingerDb = async () => {
+    setIsSyncing(true);
+    try {
+      const res = await fetch('/api/db/sync', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          incomes,
+          fixedExpenses,
+          variableExpenses,
+          creditExpenses
+        })
+      });
+      const json = await res.json();
+      if (json.success) {
+        alert('Dados salvos com sucesso no banco de dados Hostinger!');
+        checkDbStatus();
+      } else {
+        alert('Erro ao salvar no banco Hostinger: ' + json.message);
+      }
+    } catch (err: any) {
+      alert('Erro de comunicação: ' + (err?.message || err));
+    } finally {
+      setIsSyncing(false);
+    }
+  };
+
+  const handlePullFromHostingerDb = (data: any) => {
+    if (!data) return;
+    if (data.incomes) setIncomes(data.incomes);
+    if (data.fixedExpenses) setFixedExpenses(data.fixedExpenses);
+    if (data.variableExpenses) setVariableExpenses(data.variableExpenses);
+    if (data.creditExpenses) setCreditExpenses(data.creditExpenses);
+    alert('Dados carregados com sucesso do banco de dados Hostinger!');
+    setIsDbModalOpen(false);
+  };
 
   // Modal States
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -351,6 +413,8 @@ export default function App() {
         onClearData={handleClearData}
         onExportData={handleExportData}
         onImportData={handleImportData}
+        onOpenHostingerDbModal={() => setIsDbModalOpen(true)}
+        dbConnected={Boolean(dbStatus?.connected)}
       />
 
       {/* Main Container */}
@@ -599,6 +663,17 @@ export default function App() {
         variant={confirmModal.variant}
         onConfirm={confirmModal.onConfirm}
         onClose={() => setConfirmModal(prev => ({ ...prev, isOpen: false }))}
+      />
+
+      {/* Hostinger DB Connection Modal */}
+      <HostingerDbModal
+        isOpen={isDbModalOpen}
+        onClose={() => setIsDbModalOpen(false)}
+        onPullFromDb={handlePullFromHostingerDb}
+        onPushToDb={handlePushToHostingerDb}
+        isSyncing={isSyncing}
+        dbStatus={dbStatus}
+        checkDbStatus={checkDbStatus}
       />
 
       {/* Footer */}

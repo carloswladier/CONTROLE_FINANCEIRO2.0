@@ -61,7 +61,7 @@ export const CreditCardSection: React.FC<CreditCardSectionProps> = ({
   const availableDueDays = useMemo(() => {
     const daysInExpenses = creditExpenses.map(e => e.dueDay).filter(d => d && d >= 1 && d <= 31);
     const merged = Array.from(new Set(daysInExpenses.length > 0 ? daysInExpenses : [5, 10, 15, 20, 25, 30]));
-    return merged.sort((a, b) => a - b);
+    return merged.sort((a: number, b: number) => a - b);
   }, [creditExpenses]);
 
   // Get active installments for the currently selected month
