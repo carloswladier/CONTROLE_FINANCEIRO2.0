@@ -17,7 +17,7 @@ app.use(express.json({ limit: '10mb' }));
 
 // Helper function to get Hostinger MySQL connection config from process.env or provided credentials
 function getHostingerConfig(customConfig?: any) {
-  const host = customConfig?.host || process.env.HOSTINGER_DB_HOST || '';
+  const host = customConfig?.host || process.env.HOSTINGER_DB_HOST || 'localhost';
   const port = parseInt(customConfig?.port || process.env.HOSTINGER_DB_PORT || '3306', 10);
   const user = customConfig?.user || process.env.HOSTINGER_DB_USER || '';
   const password = customConfig?.password || process.env.HOSTINGER_DB_PASSWORD || '';
