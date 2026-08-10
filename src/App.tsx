@@ -71,6 +71,10 @@ export default function App() {
   const checkDbStatus = async () => {
     try {
       const res = await fetch('/api/db/status');
+      const contentType = res.headers.get('content-type');
+      if (!contentType || !contentType.includes('application/json')) {
+        throw new Error('Non-JSON response from server');
+      }
       const json = await res.json();
       setDbStatus(json);
     } catch (err) {

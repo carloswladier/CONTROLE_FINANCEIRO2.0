@@ -82,13 +82,19 @@ export const HostingerDbModal: React.FC<HostingerDbModalProps> = ({
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          host: testHost,
-          port: testPort,
-          user: testUser,
+          host: testHost.trim(),
+          port: testPort.trim(),
+          user: testUser.trim(),
           password: testPassword,
-          database: testDatabase,
+          database: testDatabase.trim(),
         })
       });
+
+      const contentType = res.headers.get('content-type');
+      if (!contentType || !contentType.includes('application/json')) {
+        throw new Error(`O servidor retornou uma resposta inválida (Status ${res.status}). O servidor Node/Express pode ter sido reiniciado; tente novamente.`);
+      }
+
       const data = await res.json();
       setTestResult(data);
     } catch (err: any) {
