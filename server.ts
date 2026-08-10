@@ -7,7 +7,6 @@ import { createServer as createViteServer } from 'vite';
 dotenv.config();
 
 const __dirname = process.cwd();
-const __dirname = path.dirname(__filename);
 
 const app = express();
 const PORT = Number(process.env.PORT) || 3000;
