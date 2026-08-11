@@ -9,9 +9,17 @@ dotenv.config();
 const __dirname = process.cwd();
 
 const app = express();
-const PORT = 3000;
+const PORT = Number(process.env.PORT) || 10000;
 
 app.use(express.json({ limit: '10mb' }));
+
+// Health check do Render
+app.get('/health', (_req, res) => {
+  res.status(200).json({
+    status: 'ok',
+    service: 'controle-financeiro'
+  });
+});
 
 // Helper function to get Hostinger MySQL connection config from process.env or provided credentials
 function getHostingerConfig(customConfig?: any) {
