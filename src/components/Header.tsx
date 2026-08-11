@@ -8,7 +8,6 @@ import {
   Download, 
   Upload,
   Plus,
-  Trash2,
   Database
 } from 'lucide-react';
 import { formatMonthName, getCurrentYearMonth, addMonthsToYearMonth } from '../utils/financeUtils';
@@ -181,17 +180,6 @@ export const Header: React.FC<HeaderProps> = ({
                   className="hidden"
                 />
               </label>
-
-              {onClearData && (
-                <button
-                  onClick={onClearData}
-                  className="p-2 text-rose-600 hover:text-rose-800 hover:bg-rose-50 rounded-lg transition-colors"
-                  title="Limpar Todos os Dados (Zerar)"
-                  id="clear-data-btn"
-                >
-                  <Trash2 className="w-4 h-4" />
-                </button>
-              )}
 
               <button
                 onClick={onResetData}
