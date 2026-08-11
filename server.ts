@@ -1,21 +1,23 @@
 import express from 'express';
 import path from 'path';
+import { fileURLToPath } from 'url';
 import mysql from 'mysql2/promise';
 import dotenv from 'dotenv';
 import { createServer as createViteServer } from 'vite';
 
 dotenv.config();
 
-const __dirname = process.cwd();
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
-const PORT = Number(process.env.PORT) || 3000;
+const PORT = 3000;
 
 app.use(express.json({ limit: '10mb' }));
 
 // Helper function to get Hostinger MySQL connection config from process.env or provided credentials
 function getHostingerConfig(customConfig?: any) {
-  const host = customConfig?.host || process.env.HOSTINGER_DB_HOST || 'localhost';
+  const host = customConfig?.host || process.env.HOSTINGER_DB_HOST || '';
   const port = parseInt(customConfig?.port || process.env.HOSTINGER_DB_PORT || '3306', 10);
   const user = customConfig?.user || process.env.HOSTINGER_DB_USER || '';
   const password = customConfig?.password || process.env.HOSTINGER_DB_PASSWORD || '';
